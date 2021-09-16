@@ -1,6 +1,7 @@
 from flask import jsonify
 from flask.helpers import make_response
-from flask_restful import Resource, abort
+from flask_restful import Resource
+from flask import abort
 import requests
 from bs4 import BeautifulSoup
 from SchoolSystemModel.decorators import exception_decorator

@@ -1,15 +1,20 @@
 
 
 from flask.helpers import make_response
-from flask_restful import abort
+from flask import abort
+from werkzeug.exceptions import ExpectationFailed, InternalServerError, Unauthorized
 
 
 def exception_decorator(func):
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
+        except Unauthorized:
+            abort(401, {'result': 'account or password is is wrong'})
+        except ExpectationFailed:
+            abort(417, {'result': 'unable to connect to chayi university school system'})
         except Exception as err:
             print(err)
-            abort(make_response(500, result='unexpected error'))
+            abort(500, {'result': 'unexpected error'})
     
     return wrapper

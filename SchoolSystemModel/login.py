@@ -1,6 +1,6 @@
-from flask import jsonify
+from flask import jsonify, abort
 from flask.helpers import make_response
-from flask_restful import Resource, abort
+from flask_restful import Resource
 import requests
 from bs4 import BeautifulSoup
 from SchoolSystemModel.decorators import exception_decorator
@@ -40,7 +40,7 @@ class LoginEndpoint(Resource):
 
         prelogin_response = self.prelogin(account, password)
         if prelogin_response['Code'] != '1':
-            abort(make_response(401, result='account or password is is wrong'))
+            abort(401)
 
         session = requests.session()
         vve = get_VVE()
@@ -68,6 +68,6 @@ class LoginEndpoint(Resource):
         )
 
         if webpid1 == None:
-            abort(make_response(417, result='unable to connect to chayi university school system'))
+            abort(417)
         return jsonify({'result': {'webpid1': webpid1}})
         

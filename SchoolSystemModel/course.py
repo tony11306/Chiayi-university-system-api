@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, abort
 from flask_restful import Resource
 import requests
 from bs4 import BeautifulSoup
@@ -41,7 +41,7 @@ class CourseEndpoint(Resource):
                     '學分數': row[5].text,
                     '學期數': row[7].text,
                     '課程修別': row[8].text + '修',
-                    '選課修別': row[9].text + '修' if row[8].text != '通' else '識',
+                    '選課修別': row[9].text + '修' if row[9].text != '通' else '識',
                     '授課老師': row[12].text.strip(),
                     '上課星期': row[13].text.strip(),
                     '上課節次': map_curriculm_time_to_list(row[14].text.strip()),
@@ -53,4 +53,4 @@ class CourseEndpoint(Resource):
                 }
             )
         
-        return jsonify({'所有課程': curriculums})
+        return jsonify({'result':{'所有課程': curriculums}})
