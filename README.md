@@ -20,7 +20,7 @@
 ```json
 {
   "result": {
-    "webpid1: "Your webpid1"
+    "webpid1": "Your webpid1"
   }
 }
 ```
