@@ -1,9 +1,9 @@
-from flask import app, jsonify
+from flask import jsonify
 from flask_restful import Resource, abort
 import requests
 from bs4 import BeautifulSoup
-from decorators import exception_decorator
-from helpers import get_VVE
+from SchoolSystemModel.decorators import exception_decorator
+from SchoolSystemModel.helpers import get_VVE
 
 LOGIN_PAGE_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Login.aspx?Language=zh-TW'
 PRELOGIN_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Login.aspx/PreLogin?Language=zh-TW'

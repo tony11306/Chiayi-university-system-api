@@ -4,9 +4,9 @@ from flask_restful import Api
 app = Flask(__name__)
 api = Api(app)
 
-from course import CourseEndpoint
-from login import LoginEndpoint
-from grades import GradeEndpoint
+from SchoolSystemModel.course import CourseEndpoint
+from SchoolSystemModel.login import LoginEndpoint
+from SchoolSystemModel.grades import GradeEndpoint
 
 if __name__ == '__main__':
     app.config['JSON_AS_ASCII'] = False

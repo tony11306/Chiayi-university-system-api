@@ -1,8 +1,8 @@
-from flask import app, jsonify
+from flask import jsonify
 from flask_restful import Resource
 import requests
 from bs4 import BeautifulSoup
-from decorators import exception_decorator
+from SchoolSystemModel.decorators import exception_decorator
 
 HEADER = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',

@@ -1,8 +1,8 @@
-from flask import app, jsonify
+from flask import jsonify
 from flask_restful import Resource, abort
 import requests
 from bs4 import BeautifulSoup
-from decorators import exception_decorator
+from SchoolSystemModel.decorators import exception_decorator
 from requests import Session
 
 HEADER = {
