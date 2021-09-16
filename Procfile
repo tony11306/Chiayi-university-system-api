@@ -1,1 +1,1 @@
-web: gunicorn SchoolSystemModel/main:app
+web: gunicorn --pythonpath SchoolSystemModel main:app
