@@ -13,7 +13,6 @@ HEADER = {
 
 class GradeEndpoint(Resource):
 
-
     @exception_decorator
     def post(self, webpid1: str):
         url = 'https://web085004.adm.ncyu.edu.tw/grade_net/StuSco_630.aspx'

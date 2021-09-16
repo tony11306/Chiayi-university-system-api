@@ -13,7 +13,7 @@ app.config['JSONIFY_MINETYPE'] = 'application/json;charset=utf-8'
 app.config.update(RESTFUL_JSON=dict(ensure_ascii=False))
 
 api.add_resource(CourseEndpoint, '/course/<string:webpid1>')
-api.add_resource(LoginEndpoint, '/login/<string:account>/<string:password>')
+api.add_resource(LoginEndpoint, '/login')
 api.add_resource(GradeEndpoint, '/grade/<string:webpid1>')
 
 if __name__ == '__main__':

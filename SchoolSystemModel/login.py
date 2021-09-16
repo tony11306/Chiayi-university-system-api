@@ -1,6 +1,6 @@
 from flask import jsonify, abort
 from flask.helpers import make_response
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 import requests
 from bs4 import BeautifulSoup
 from SchoolSystemModel.decorators import exception_decorator
@@ -9,7 +9,15 @@ from SchoolSystemModel.helpers import get_VVE
 LOGIN_PAGE_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Login.aspx?Language=zh-TW'
 PRELOGIN_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Login.aspx/PreLogin?Language=zh-TW'
 
+
 class LoginEndpoint(Resource):
+
+    def __init__(self) -> None:
+        self.reqparse_args = reqparse.RequestParser()
+        self.reqparse_args.add_argument('account', type=str, required=True, help='account is required')
+        self.reqparse_args.add_argument('password', type=str, required=True, help='password is required')
+        super().__init__()
+
 
     @staticmethod
     def prelogin(account: str, password: str):
@@ -33,7 +41,10 @@ class LoginEndpoint(Resource):
 
     # this will return webpid1
     @exception_decorator
-    def post(self, account: str, password: str):
+    def post(self):
+        args = self.reqparse_args.parse_args()
+        account = args['account']
+        password = args['password']
         HEADER = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
         }
