@@ -1,4 +1,5 @@
 from flask import jsonify
+from flask.helpers import make_response
 from flask_restful import Resource, abort
 import requests
 from bs4 import BeautifulSoup
@@ -39,7 +40,7 @@ class LoginEndpoint(Resource):
 
         prelogin_response = self.prelogin(account, password)
         if prelogin_response['Code'] != '1':
-            abort(401, {'result': 'account or password is is wrong'})
+            abort(make_response(401, result='account or password is is wrong'))
 
         session = requests.session()
         vve = get_VVE()
@@ -67,6 +68,6 @@ class LoginEndpoint(Resource):
         )
 
         if webpid1 == None:
-            abort(417, {'result': 'unable to connect to chayi university school system'})
+            abort(make_response(417, result='unable to connect to chayi university school system'))
         return jsonify({'result': {'webpid1': webpid1}})
         

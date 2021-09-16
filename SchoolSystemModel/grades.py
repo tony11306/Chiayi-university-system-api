@@ -1,4 +1,5 @@
 from flask import jsonify
+from flask.helpers import make_response
 from flask_restful import Resource, abort
 import requests
 from bs4 import BeautifulSoup
@@ -72,5 +73,4 @@ class GradeEndpoint(Resource):
             return result
             
         result = list(map(get_semester_grade, semesterIDs))
-
         return jsonify({'result': {'所有學期': result}})
