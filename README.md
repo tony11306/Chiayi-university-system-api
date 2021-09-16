@@ -1,4 +1,4 @@
-# Chayi-university-system-api
+# Chiayi-university-system-api
 
 一個用來練習 flask 架 restful api 的小專案，把嘉義大學我自己常需要查看的資料包成 api，
 以後有人要用也可以 call 看看。
