@@ -73,4 +73,4 @@ class GradeEndpoint(Resource):
             
         result = list(map(get_semester_grade, semesterIDs))
 
-        return jsonify({'所有學期': result}, 200)
+        return jsonify({'result': {'所有學期': result}})

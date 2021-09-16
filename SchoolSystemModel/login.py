@@ -39,7 +39,7 @@ class LoginEndpoint(Resource):
 
         prelogin_response = self.prelogin(account, password)
         if prelogin_response['Code'] != '1':
-            return jsonify({'result': '帳號或密碼錯誤'}, 401)
+            abort(401, {'result': 'account or password is is wrong'})
 
         session = requests.session()
         vve = get_VVE()
@@ -67,6 +67,6 @@ class LoginEndpoint(Resource):
         )
 
         if webpid1 == None:
-            abort(417)
-        return jsonify({'result': {'webpid1': webpid1}}, 200)
+            abort(417, {'result': 'unable to connect to chayi university school system'})
+        return jsonify({'result': {'webpid1': webpid1}})
         
