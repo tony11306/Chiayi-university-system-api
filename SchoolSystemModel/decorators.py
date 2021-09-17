@@ -17,6 +17,6 @@ def exception_decorator(func):
             abort(400, {'result': 'server can not understand the request.'})
         except Exception as err:
             print(err)
-            abort(500, {'result': 'unexpected error'})
+            abort(500, {'result': 'unexpected error. It could be school system is under maintaining, or that page is unable to access currently.'})
     
     return wrapper
