@@ -26,7 +26,6 @@ class CourseEndpoint(Resource):
 
         def course_time_to_dict(day: str, start_end_time: str):
             start_end = start_end_time.split('~')
-            print(day, start_end_time)
             return {
                 "星期": day,
                 "開始節次": start_end[0],
