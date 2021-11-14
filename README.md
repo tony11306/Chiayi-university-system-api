@@ -59,6 +59,13 @@
 
 > **Request type**: `POST`
 
+> **Request schema**:
+> ```json
+> {
+>   "webpid1": ""
+> }
+> 
+
 | Parameters | Type   | Description                  |
 |------------|--------|------------------------------|
 | webpid1    | string | 由上面 login 功能取得的參數     |
@@ -105,6 +112,13 @@
 > **URL**: `Post https://chayi-university-system-api.herokuapp.com/grade`
 
 > **Request type**: `POST`
+
+> **Request schema**:
+> ```json
+> {
+>   "webpid1": ""
+> }
+> 
 
 | Parameters | Type   | Description                  |
 |------------|--------|------------------------------|
