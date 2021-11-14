@@ -55,7 +55,7 @@
 
 由於程式是在`網路選課作業/選課結果查詢`爬取結果的，所以那個網頁關閉時，將無法回傳資料，未來可能考慮用`網路選課作業/選課計劃書`來爬。
 
-> **URL**: `Post https://chayi-university-system-api.herokuapp.com/course/{webpid1}` (不包括大括號)
+> **URL**: `Post https://chayi-university-system-api.herokuapp.com/course`
 
 > **Request type**: `POST`
 
@@ -102,7 +102,7 @@
 
 此功能需要 webpid1 參數，會回傳這個帳號所有學期的學期成績。
 
-> **URL**: `Post https://chayi-university-system-api.herokuapp.com/grade/{webpid1}` (不包括大括號)
+> **URL**: `Post https://chayi-university-system-api.herokuapp.com/grade`
 
 > **Request type**: `POST`
 

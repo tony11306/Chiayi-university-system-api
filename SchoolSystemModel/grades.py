@@ -1,6 +1,6 @@
 from flask import jsonify
 from flask.helpers import make_response
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from flask import abort
 import requests
 from bs4 import BeautifulSoup
@@ -13,8 +13,15 @@ HEADER = {
 
 class GradeEndpoint(Resource):
 
+    def __init__(self) -> None:
+        self.reqparse_args = reqparse.RequestParser()
+        self.reqparse_args.add_argument('webpid1', type=str, required=True, help='webpid1 is required')
+        super().__init__()
+
     @exception_decorator
-    def post(self, webpid1: str):
+    def post(self):
+        args = self.reqparse_args.parse_args()
+        webpid1 = args['webpid1']
         url = 'https://web085004.adm.ncyu.edu.tw/grade_net/StuSco_630.aspx'
         session = requests.session()
         response = session.post(

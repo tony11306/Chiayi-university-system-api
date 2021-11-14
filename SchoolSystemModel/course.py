@@ -1,5 +1,5 @@
 from flask import jsonify, abort
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 import requests
 from bs4 import BeautifulSoup
 from SchoolSystemModel.decorators import exception_decorator
@@ -10,8 +10,15 @@ HEADER = {
 
 class CourseEndpoint(Resource):
 
+    def __init__(self) -> None:
+        self.reqparse_args = reqparse.RequestParser()
+        self.reqparse_args.add_argument('webpid1', type=str, required=True, help='webpid1 is required')
+        super().__init__()
+
     @exception_decorator
-    def post(self, webpid1: str):
+    def post(self):
+        args = self.reqparse_args.parse_args()
+        webpid1 = args['webpid1']
         res = requests.post(
             url='https://web08503a.adm.ncyu.edu.tw/stu_selq02.aspx',
             headers=HEADER,
