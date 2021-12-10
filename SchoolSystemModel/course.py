@@ -20,7 +20,7 @@ class CourseEndpoint(Resource):
         args = self.reqparse_args.parse_args()
         webpid1 = args['webpid1']
         res = requests.post(
-            url='https://web08503a.adm.ncyu.edu.tw/stu_selq02.aspx',
+            url='https://web08503a.adm.ncyu.edu.tw/stu_selq88.aspx', # 當學期選課查詢
             headers=HEADER,
             data={
                 'WebPid1': webpid1,
