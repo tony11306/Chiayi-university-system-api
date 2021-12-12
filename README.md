@@ -17,10 +17,10 @@
 
 > **Request type**: `POST`
 
-| Parameters | type   | description          |
-|------------|--------|----------------------|
-| account    | string | 你的學號             |
-| password   | string | 你的校務行政系統密碼 |
+| Parameters | type   | description          |Required|
+|------------|--------|----------------------|--------|
+| account    | string | 你的學號              |Required|
+| password   | string | 你的校務行政系統密碼    |Required|
 
 > **Request schema**:
 > ```json
@@ -44,18 +44,18 @@
 > ```json
 > {
 >   "message": {
->     "result": "according to what error"
+>     "result": "error message"
 >   }
 > }
 > ```
 
-## Course 取得本學期選上的所有課堂
+## Personal Course 取得個人本學期選上的所有課堂
 
 此功能需要 webpid1 參數，會回傳這個帳號這學期選到的課程資料。
 
-由於程式是在`網路選課作業/選課結果查詢`爬取結果的，所以那個網頁關閉時，將無法回傳資料，未來可能考慮用`網路選課作業/選課計劃書`來爬。
+目前是使用`當學期選課查詢`來爬取，不確定是否穩定。
 
-> **URL**: `Post https://chayi-university-system-api.herokuapp.com/course`
+> **URL**: `https://chayi-university-system-api.herokuapp.com/course`
 
 > **Request type**: `POST`
 
@@ -66,9 +66,9 @@
 > }
 > 
 
-| Parameters | Type   | Description                  |
-|------------|--------|------------------------------|
-| webpid1    | string | 由上面 login 功能取得的參數     |
+| Parameters | Type   | Description                  | Required|
+|------------|--------|------------------------------|---------|
+| webpid1    | string | 由上面 login 功能取得的參數     |Required|
 
 >**Successful response**: 
 > ```json
@@ -100,7 +100,7 @@
 > ```json
 > {
 >   "message": {
->     "result": "according to what error"
+>     "result": "error message"
 >   }
 > }
 > ```
@@ -109,7 +109,7 @@
 
 此功能需要 webpid1 參數，會回傳這個帳號所有學期的學期成績。
 
-> **URL**: `Post https://chayi-university-system-api.herokuapp.com/grade`
+> **URL**: `https://chayi-university-system-api.herokuapp.com/grade`
 
 > **Request type**: `POST`
 
@@ -120,9 +120,9 @@
 > }
 > 
 
-| Parameters | Type   | Description                  |
-|------------|--------|------------------------------|
-| webpid1    | string | 由上面 login 功能取得的參數     |
+| Parameters | Type   | Description                  |Required|
+|------------|--------|------------------------------|--------|
+| webpid1    | string | 由上面 login 功能取得的參數     |Required|
 
 >**Successful response**: 
 > ```json
@@ -149,7 +149,78 @@
 > ```json
 > {
 >   "message": {
->     "result": "according to what error"
+>     "result": "error message"
+>   }
+> }
+> ```
+
+## Course Selection 取得符合條件的選課
+
+查詢選課學期符合條件的課程，若沒有附上任何參數，則回傳所有課程，若沒有符合條件的結果，則回傳空的結果。
+
+> **URL**: `https://chayi-university-system-api.herokuapp.com/course_selection`
+
+> **Request type**: `GET`
+
+
+| Parameters | Type   | Description                  |Required|
+|------------|--------|------------------------------|--------|
+| 校區        | string | 選項有 `蘭潭校區`、`民雄校區`、`新民校區`、`林森校區`。 |Optional|
+|上課系所|string|就是上課的系所，一般是系名縮寫，例如`資工系`、`景觀系`、`應數系`等。|Optional|
+|適用年級|string|限定上課的年級，選項有 `1`、`2`、`3`、`4`、`5`。|Optional|
+|課程修別|string|選項有`選修`和`必修`|Optional|
+|上課學院|string|選項有`師範學院`、`人文藝術學院`、`管理學院`、`理工學院`、`農學院`、`生命科學院`、`獸醫學院`|Optional|
+|星期|string|選項有`一`、`二`、`三`、`四`、`五`、`六`、`日`|Optional|
+|開始節次|string|選項有 `1`、`2`、`3`、`4`、`F`、`5`、`6`、`7`、`8`、`9`、`A`、`B`、`C`、`D`，若有附上結束節次，則會搜尋有在時間區間內的結果。|Optional|
+|結束節次|string|選項有 `1`、`2`、`3`、`4`、`F`、`5`、`6`、`7`、`8`、`9`、`A`、`B`、`C`、`D`，若有附上開始節次，則會搜尋有在時間區間內的結果。|Optional|
+
+>**Successful response**: 
+> ```json
+>"result": [{
+>        "上課學制": "進學班",
+>        "上課學院": "xx學院",
+>        "上課教室": "xxx",
+>        "上課時間": [{
+>                "星期": "一",
+>                "結束節次": "B",
+>                "開始節次": "B"
+>            },
+>            {
+>                "星期": "六",
+>                "結束節次": "A",
+>                "開始節次": "A"
+>            }
+>        ],
+>        "上課班別": "甲班",
+>        "上課系所": "xx系",
+>        "上課組別": "不分組",
+>        "備註": " ",
+>        "學分數": "2",
+>        "學期數": "1",
+>        "授課老師": "xxx",
+>        "授課類別": "正課",
+>        "時數": "2",
+>        "校區": "蘭潭校區",
+>        "永久課號": "65100090",
+>        "課程修別": "必修",
+>        "課程名稱": "xxx",
+>        "課程類別": "專業必修課程",
+>        "適用年級": "2",
+>        "選課類別": "一般專業課程(含專業必修及專業選修課程)",
+>        "開課單位": "xx系",
+>        "開課序號": "0075",
+>        "開課系號": "651",
+>        "限修人數": "50",
+>        "限選條件": "開放外系修課"
+>    },
+> ]
+> ```
+
+> **Failed response**:
+> ```json
+> {
+>   "message": {
+>     "result": "error message"
 >   }
 > }
 > ```
