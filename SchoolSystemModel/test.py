@@ -45,6 +45,14 @@ def course_time_to_dict(day: str, start_end_time: str):
         "結束節次": start_end[1]
     }
 
+def find_course_outline_url(td_element):
+    try:
+        crscode = td_element.find('a')['href'].replace('/pub_tagoutline.aspx?tagid=', '')
+        crscode = crscode.replace('&WebPid1=1', '')
+        return 'https://web085004.adm.ncyu.edu.tw/Syllabus/Syllabus_Rpt.aspx?CrsCode=' + crscode
+    except:
+        return ""
+
 st = set()
 
 # this will take up to 4 or 5 mins
@@ -74,6 +82,7 @@ for campus in CAMPUS_OPTION_VALUES:
                         '開課系號': row[2].text,
                         '開課序號': row[3].text,
                         '課程名稱': row[4].text,
+                        '教學大綱': find_course_outline_url(row[4]),
                         '永久課號': row[5].text,
                         '開課單位': row[6].text,
                         '上課學制': row[7].text,
