@@ -6,7 +6,9 @@ from bs4 import BeautifulSoup
 from SchoolSystemModel.decorators import exception_decorator
 
 with open('./SchoolSystemModel/current_semester_course_datas/current_semester_course_datas.json', 'r', encoding='utf-8') as f:
-    _data = json.load(f)['所有課程']
+    _datas = json.load(f)['所有課程']
+    _data = _datas['所有課程']
+    _semester = _datas['選課學年']
 
 _CLASS_MAP = {'1': 1,
     '2': 2,
@@ -86,4 +88,4 @@ class CourseSelectionEndpoint(Resource):
 
             result.append(course)
 
-        return jsonify({'result': result})
+        return jsonify({'result': result, 'semester': _semester})

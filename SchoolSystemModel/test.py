@@ -114,6 +114,5 @@ for campus in CAMPUS_OPTION_VALUES:
 
         
 print(len(courses))
-
 with open('./SchoolSystemModel/current_semester_course_datas/current_semester_course_datas.json', 'w', encoding='utf-8') as f:
-    json.dump({'所有課程': courses}, fp=f, ensure_ascii=False)
+    json.dump({'選課學年': f'{course_select_year} 學年度第 {course_select_semester} 學期', '所有課程': courses}, fp=f, ensure_ascii=False)
