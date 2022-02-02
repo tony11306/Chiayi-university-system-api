@@ -1,13 +1,12 @@
+import json
 import requests
 from bs4 import BeautifulSoup
 SEARCH_URL = 'https://web085003.adm.ncyu.edu.tw/pub_timta1.aspx'
 
-res = requests.get(SEARCH_URL)
+f = open('SchoolSystemModel/current_semester_course_datas/current_semester_course_datas.json', encoding='utf-8')
+datas = json.load(f)
+s = set()
+for data in datas['所有課程']:
+    s.add(data['上課學制'])
 
-soup = BeautifulSoup(res.text, features='html.parser')
-
-head = soup.find('div', {'id': 'HtmlHeader'})
-
-head.find('font', {'color': 'blue'})
-
-head.text.split('選課學年、學期：')[1].split('(進入本網頁時間')[0].strip()
+print(s)

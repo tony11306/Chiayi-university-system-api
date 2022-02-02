@@ -39,6 +39,7 @@ class CourseSelectionEndpoint(Resource):
         self.reqparse_args.add_argument('開始節次', type=str, required=False)
         self.reqparse_args.add_argument('結束節次', type=str, required=False)
         self.reqparse_args.add_argument('課程類別', type=str, required=False)
+        self.reqparse_args.add_argument('上課學制', type=str, required=False)
         super().__init__()
 
     @exception_decorator
@@ -53,6 +54,7 @@ class CourseSelectionEndpoint(Resource):
         start_class = args['開始節次']
         end_class = args['結束節次']
         course_classification = args['課程類別']
+        education_level = args['上課學制']
 
         result = []
 
@@ -68,6 +70,8 @@ class CourseSelectionEndpoint(Resource):
             if academy is not None and course['上課學院'] != academy:
                 continue
             if course_classification is not None and course['課程類別'] != course_classification:
+                continue
+            if education_level is not None and course['上課學制'] != education_level:
                 continue
             if day is not None or start_class is not None or end_class is not None:
                 flag = False
