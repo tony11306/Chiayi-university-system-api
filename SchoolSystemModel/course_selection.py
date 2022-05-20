@@ -58,9 +58,6 @@ class CourseSelectionEndpoint(Resource):
 
         result = []
 
-        if campus is not None and campus == 'ecourse 線上':
-            campus = 'https：//ecourse. ncyu. edu. tw'
-
         for course in _data:
             if campus is not None and course['校區'] != campus:
                 continue
