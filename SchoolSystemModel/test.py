@@ -4,8 +4,8 @@ import json
 from bs4 import BeautifulSoup
 
 
-# A: 蘭潭, B: 民雄, C: 林森, D: 新民
-CAMPUS_OPTION_VALUES = ['A', 'B', 'C', 'D']
+# A: 蘭潭, B: 民雄, C: 林森, D: 新民, E: ecourse線上課程
+CAMPUS_OPTION_VALUES = ['I3', 'A', 'B', 'C', 'D', ]
 # 禮拜一到日
 COURSE_DAYS = ['1', '2', '3', '4', '5', '6', '7']
 CLASSES = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']
