@@ -105,6 +105,8 @@ for campus in CAMPUS_OPTION_VALUES:
                         '限選條件': row[26].text
                         
                     }
+                    if datas['校區'] == 'https：//ecourse. ncyu. edu. tw':
+                        datas['校區'] = 'ecourse 線上'
                     courses.append(datas)
                     st.add(course_id)
                     print(datas)
