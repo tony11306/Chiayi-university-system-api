@@ -21,6 +21,6 @@ api.add_resource(GradeEndpoint, '/grade')
 api.add_resource(CourseSelectionEndpoint, '/course_selection')
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
 
 
