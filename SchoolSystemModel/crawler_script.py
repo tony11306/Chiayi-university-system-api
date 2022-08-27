@@ -77,32 +77,32 @@ for campus in CAMPUS_OPTION_VALUES:
                     if course_id in st:
                         continue
                     datas = {
-                        '選課類別': row[0].text,
-                        '課程類別': row[1].text,
-                        '開課系號': row[2].text,
-                        '開課序號': row[3].text,
-                        '課程名稱': row[4].text,
-                        '教學大綱': find_course_outline_url(row[4]),
-                        '永久課號': row[5].text,
-                        '開課單位': row[6].text,
-                        '上課學制': row[7].text,
-                        '上課學院': row[8].text,
-                        '上課系所': row[9].text,
-                        '上課組別': row[10].text,
-                        '適用年級': row[11].text,
-                        '上課班別': row[12].text,
-                        '課程修別': row[13].text,
-                        '學分數': row[14].text,
-                        '時數': row[15].text,
-                        '學期數': row[16].text,
-                        '授課類別': row[17].text,
-                        '備註': row[18].text,
-                        '授課老師': row[19].text.strip(),
-                        '上課時間': list(map(course_time_to_dict, row[20].text.strip().split(), row[21].text.strip().split())),
-                        '上課教室': row[22].text,
-                        '校區': row[23].text,
-                        '限修人數': row[24].text,
-                        '限選條件': row[26].text
+                        '選課類別': row[0].text, # selection_category
+                        '課程類別': row[1].text, # course_category
+                        '開課系號': row[2].text, # department_code
+                        '開課序號': row[3].text, # course_number
+                        '課程名稱': row[4].text, # name
+                        '教學大綱': find_course_outline_url(row[4]), # outline_url
+                        '永久課號': row[5].text, # permanent_course_number
+                        '開課單位': row[6].text, # department_name
+                        '上課學制': row[7].text, # education_system
+                        '上課學院': row[8].text, # college_name
+                        '上課系所': row[9].text, # target_department_name
+                        '上課組別': row[10].text, # group_type
+                        '適用年級': row[11].text, # grade
+                        '上課班別': row[12].text, # class
+                        '課程修別': row[13].text, # course_type
+                        '學分數': row[14].text, # credit
+                        '時數': row[15].text, # hour
+                        '學期數': row[16].text, # semester_count
+                        '授課類別': row[17].text, # teaching_type
+                        '備註': row[18].text, # remark
+                        '授課老師': row[19].text.strip(), # teacher_name
+                        '上課時間': list(map(course_time_to_dict, row[20].text.strip().split(), row[21].text.strip().split())), # course_time
+                        '上課教室': row[22].text, # classroom
+                        '校區': row[23].text, # campus
+                        '限修人數': row[24].text, # limit_number
+                        '限選條件': row[26].text # limit_condition
                         
                     }
                     if datas['校區'] == 'https：//ecourse. ncyu. edu. tw':
