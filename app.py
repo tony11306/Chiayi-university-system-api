@@ -20,7 +20,11 @@ api.add_resource(LoginEndpoint, '/login')
 api.add_resource(GradeEndpoint, '/grade')
 api.add_resource(CourseSelectionEndpoint, '/course_selection')
 
+@app.route('/')
+def index():
+    return '<h1>The API is running<h1>'
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
 
 
