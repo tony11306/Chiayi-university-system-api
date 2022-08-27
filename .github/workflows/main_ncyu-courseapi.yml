@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'NCYU-CourseAPI'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_6A020B0254F04DF8A9F2244A36C94814 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5C4CF92B22274BD6AD9EEC7BDAB28DD4 }}
