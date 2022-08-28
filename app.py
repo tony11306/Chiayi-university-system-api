@@ -25,6 +25,6 @@ def index():
     return '<h1>The API is running<h1>'
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
 
 
