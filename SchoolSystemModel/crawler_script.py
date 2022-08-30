@@ -3,7 +3,7 @@ import requests
 import json
 from bs4 import BeautifulSoup
 
-
+'''
 # A: 蘭潭, B: 民雄, C: 林森, D: 新民, E: ecourse線上課程
 CAMPUS_OPTION_VALUES = ['I3', 'A', 'B', 'C', 'D', ]
 # 禮拜一到日
@@ -85,7 +85,7 @@ for campus in CAMPUS_OPTION_VALUES:
                         '教學大綱': find_course_outline_url(row[4]), # outline_url
                         '永久課號': row[5].text, # permanent_course_number
                         '開課單位': row[6].text, # department_name
-                        '上課學制': row[7].text, # education_system
+                        '上課學制': row[7].text, # education_level
                         '上課學院': row[8].text, # college_name
                         '上課系所': row[9].text, # target_department_name
                         '上課組別': row[10].text, # group_type
@@ -101,7 +101,7 @@ for campus in CAMPUS_OPTION_VALUES:
                         '上課時間': list(map(course_time_to_dict, row[20].text.strip().split(), row[21].text.strip().split())), # course_time
                         '上課教室': row[22].text, # classroom
                         '校區': row[23].text, # campus
-                        '限修人數': row[24].text, # limit_number
+                        '限修人數': row[24].text, # sutdent_limit
                         '限選條件': row[26].text # limit_condition
                         
                     }
@@ -118,3 +118,53 @@ for campus in CAMPUS_OPTION_VALUES:
 print(len(courses))
 with open('./SchoolSystemModel/current_semester_course_datas/current_semester_course_datas.json', 'w', encoding='utf-8') as f:
     json.dump({'選課學年': f'{course_select_year} 學年度第 {course_select_semester} 學期', '所有課程': courses}, fp=f, ensure_ascii=False)
+'''
+
+from sqlalchemy import Column, Integer, String, ForeignKey, Table, create_engine, CHAR
+from sqlalchemy.orm import relationship, backref, Session
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+engine_url = 'sqlite:///db.db'
+engine = create_engine(engine_url, echo=True)
+
+class CourseTime(Base):
+    __tablename__ = 'Time'
+    id = Column(Integer, primary_key=True)
+    day = Column(String(10))
+    start_time = Column(String(10))
+    end_time = Column(String(10))
+    course_id = Column(Integer, ForeignKey('Course.id'))
+
+class Course(Base):
+    __tablename__ = 'Course'
+    id = Column(Integer, primary_key=True)
+    selection_category = Column(String(255), nullable=False)
+    course_category = Column(String(255), nullable=False)
+    department_code = Column(String(64), nullable=False)
+    course_number = Column(String(64), nullable=False)
+    name = Column(String(255), nullable=False)
+    outline_url = Column(String(255), nullable=False)
+    permanent_course_number = Column(String(64), nullable=False)
+    department_name = Column(String(64), nullable=False)
+    education_level = Column(String(64), nullable=False)
+    college_name = Column(String(64), nullable=False)
+    target_department_name = Column(String(64), nullable=False)
+    group_type = Column(String(64), nullable=False)
+    grade = Column(Integer, nullable=False)
+    class_ = Column(String(64), nullable=False)
+    course_type = Column(String(64), nullable=False)
+    credit = Column(Integer, nullable=False)
+    hour = Column(Integer, nullable=False)
+    semester_count = Column(Integer, nullable=False)
+    teaching_type = Column(String(64), nullable=False)
+    remark = Column(String(255), nullable=False)
+    teacher_name = Column(String(255), nullable=False)
+    course_time = relationship('CourseTime', backref='Course')
+    classroom = Column(String(255), nullable=False)
+    campus = Column(String(255), nullable=False)
+    sutdent_limit = Column(Integer, nullable=False)
+    limit_condition = Column(String(255), nullable=False)
+
+
+
