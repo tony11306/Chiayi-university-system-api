@@ -8,3 +8,10 @@ class CourseTime(db.Model):
     start_time = Column(String(10))
     end_time = Column(String(10))
     course_id = Column(Integer, ForeignKey('Course.id'))
+
+    def to_json(self):
+        return {
+            'day': self.day,
+            'start_time': self.start_time,
+            'end_time': self.end_time
+        }
