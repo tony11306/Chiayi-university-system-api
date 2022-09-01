@@ -1,9 +1,12 @@
+from ast import Delete
 from Model.course import Course
 from Model.time import CourseTime
 from typing import List
+from Interface.Service.course_service import CourseServiceInterface
+from flask_sqlalchemy import SQLAlchemy
 
-class CourseService:
-    def __init__(self, db):
+class CourseService(CourseServiceInterface):
+    def __init__(self, db: SQLAlchemy):
         self.db = db
     
     @staticmethod
@@ -22,6 +25,8 @@ class CourseService:
         }
         query_dict = {}
         for query in query_string.split('&'):
+            if query == '':
+                continue
             key, value = query.split('=')
             if key in MAPPING_TABLE and value != '':
                 query_dict[MAPPING_TABLE[key]] = value
@@ -30,12 +35,44 @@ class CourseService:
 
     def get_courses(self, query_params) -> List[Course]:
         query_dict = self.query_string_to_dict(query_params)
-        courses = self.db.session.query(Course).filter_by(**query_dict).all()
+        time_info = {}
+        if 'day' in query_dict:
+            time_info['day'] = query_dict['day']
+            del query_dict['day']
+        if 'start_time' in query_dict:
+            time_info['start_time'] = query_dict['start_time']
+            del query_dict['start_time']
+        if 'end_time' in query_dict:
+            time_info['end_time'] = query_dict['end_time']
+            del query_dict['end_time']
+
+
+        courses = self.db.session.query(Course).filter_by(
+            **query_dict, 
+        ).join(CourseTime).filter_by(
+            **time_info
+        ).all()
+
         return courses
     
     def get_course(self, query_params) -> Course:
         query_dict = self.query_string_to_dict(query_params)
-        course = self.db.session.query(Course).filter_by(**query_dict).first()
+        time_info = {}
+        if 'day' in query_dict:
+            time_info['day'] = query_dict['day']
+            del query_dict['day']
+        if 'start_time' in query_dict:
+            time_info['start_time'] = query_dict['start_time']
+            del query_dict['start_time']
+        if 'end_time' in query_dict:
+            time_info['end_time'] = query_dict['end_time']
+            del query_dict['end_time']
+
+        course = self.db.session.query(Course).filter_by(
+            **query_dict, 
+        ).join(CourseTime).filter_by(
+            **time_info
+        ).first()
         return course
 
     def add_course(self, course: Course):

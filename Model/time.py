@@ -1,4 +1,4 @@
-from ..app import db
+from Model.db import db
 from sqlalchemy import Column, Integer, String, ForeignKey
 
 class CourseTime(db.Model):
@@ -11,7 +11,7 @@ class CourseTime(db.Model):
 
     def to_json(self):
         return {
-            'day': self.day,
-            'start_time': self.start_time,
-            'end_time': self.end_time
+            '星期': self.day,
+            '開始節次': self.start_time,
+            '結束節次': self.end_time
         }

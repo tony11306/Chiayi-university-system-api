@@ -1,8 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
 from Helper.helper import get_VVE
+from Interface.Service.ncyu_proxy_service import NCYUProxyServiceInterface
 
-class NCYUProxyService:
+class NCYUProxyService(NCYUProxyServiceInterface):
     LOGIN_PAGE_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Login.aspx?Language=zh-TW'
     PRELOGIN_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Login.aspx/PreLogin?Language=zh-TW'
     STUDENT_GRADE_URL = 'https://web085004.adm.ncyu.edu.tw/grade_net/StuSco_630.aspx'
