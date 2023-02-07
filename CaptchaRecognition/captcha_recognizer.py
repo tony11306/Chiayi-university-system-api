@@ -42,9 +42,9 @@ class Model(nn.Module):
 
 class CaptchaRecognizer:
     def __init__(self):
-        self.model = Model()
-        self.model.load_state_dict(torch.load('CaptchaRecognition/model_state_dict.pth'))
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.model = Model()
+        self.model.load_state_dict(torch.load('CaptchaRecognition/model_state_dict.pth', map_location=self.device))
         self.model.eval()
         self.model.to(self.device)
         self.transform = transforms.Compose([
