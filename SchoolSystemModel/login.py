@@ -77,6 +77,9 @@ class LoginEndpoint(Resource):
         }}).json()['d']
         code = response['Code']
 
+        if code == '4':
+            abort(500)
+
         if code != '1':
             abort(401)
 
