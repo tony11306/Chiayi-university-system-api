@@ -61,22 +61,21 @@ class LoginEndpoint(Resource):
         captcha_text = ''
         response = None
         # get captcha image
-        while code == '4':
-            response = s.get(url=CAPTCHA_URL, headers=HEADER)
-            captcha = response.content
-            captcha = cv2.imdecode(np.frombuffer(captcha, np.uint8), cv2.IMREAD_COLOR)
-            captcha_text = self.captcha_recognizer.recognize(captcha)  
+        response = s.get(url=CAPTCHA_URL, headers=HEADER)
+        captcha = response.content
+        captcha = cv2.imdecode(np.frombuffer(captcha, np.uint8), cv2.IMREAD_COLOR)
+        captcha_text = self.captcha_recognizer.recognize(captcha)  
 
-            response = s.post(url=PRELOGIN_URL, headers={
-                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
-                'content-type': 'application/json'
-            }, json={
-                'view':{
-                    'AccountId': account,
-                    'Password': password,
-                    'Captcha': captcha_text
-            }}).json()['d']
-            code = response['Code']
+        response = s.post(url=PRELOGIN_URL, headers={
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
+            'content-type': 'application/json'
+        }, json={
+            'view':{
+                'AccountId': account,
+                'Password': password,
+                'Captcha': captcha_text
+        }}).json()['d']
+        code = response['Code']
 
         if code != '1':
             abort(401)
