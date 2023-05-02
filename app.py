@@ -26,6 +26,7 @@ def index():
     return '<h1>The API is running<h1>'
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
     app.run(debug=False)
 
 

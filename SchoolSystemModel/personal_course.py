@@ -3,6 +3,7 @@ from flask_restful import Resource, reqparse
 import requests
 from bs4 import BeautifulSoup
 from SchoolSystemModel.decorators import exception_decorator
+import logging
 
 HEADER = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
@@ -19,7 +20,8 @@ class CourseEndpoint(Resource):
     def post(self):
         args = self.reqparse_args.parse_args()
         webpid1 = args['webpid1']
-        res = requests.post(
+        session = requests.session()
+        res = session.post(
             url='https://web08503a.adm.ncyu.edu.tw/stu_selq88.aspx', # 當學期選課查詢
             headers=HEADER,
             data={

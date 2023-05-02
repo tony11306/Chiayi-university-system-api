@@ -25,27 +25,6 @@ class LoginEndpoint(Resource):
         self.reqparse_args.add_argument('password', type=str, required=True, help='password is required')
         super().__init__()
 
-
-    @staticmethod
-    def prelogin(account: str, password: str):
-        HEADER = {
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
-            'content-type': 'application/json'
-        }
-
-        response = requests.post(
-            url=PRELOGIN_URL,
-            headers=HEADER,
-            json={
-                'view':{
-                    'AccountId': account,
-                    'Password': password
-                }
-            }
-        )
-
-        return response.json()['d']
-
     # this will return webpid1
     @exception_decorator
     def post(self):
