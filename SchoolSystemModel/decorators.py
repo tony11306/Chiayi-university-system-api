@@ -3,7 +3,7 @@
 from flask.helpers import make_response
 from flask import abort
 from werkzeug.exceptions import BadRequest, ExpectationFailed, InternalServerError, Unauthorized
-
+import logging
 
 def exception_decorator(func):
     def wrapper(*args, **kwargs):
@@ -16,7 +16,7 @@ def exception_decorator(func):
         except BadRequest:
             abort(400, {'result': 'server can not understand the request.'})
         except Exception as err:
-            print(err)
+            logging.error(err)
             abort(500, {'result': 'unexpected error. It could be school system is under maintaining, or that page is unable to access currently.'})
     
     return wrapper
