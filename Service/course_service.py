@@ -75,16 +75,24 @@ class CourseService(CourseServiceInterface):
         ).first()
         return course
 
-    def add_course(self, course: Course):
+    def add_course(self, course: Course, course_time: List[CourseTime]):
         self.db.session.add(course)
         self.db.session.commit()
+
+        course_id = course.id
+        for time in course_time:
+            time.course_id = course_id
+            self.db.session.add(time)
+        self.db.session.commit()
     
-    def delete_course(self, course: Course):
+    def delete_course(self, id: int):
+        course = self.db.session.query(Course).filter_by(id=id).first()
         self.db.session.delete(course)
         self.db.session.commit()
-    
-    def update_course(self, course: Course):
+
+    def clear_courses(self):
+        self.db.session.query(Course).delete()
+        self.db.session.query(CourseTime).delete()
         self.db.session.commit()
-    
     
 

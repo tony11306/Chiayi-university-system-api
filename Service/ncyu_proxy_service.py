@@ -1,47 +1,57 @@
 import requests
 from bs4 import BeautifulSoup
+import cv2
+import numpy as np
+
 from Helper.helper import get_VVE
 from Interface.Service.ncyu_proxy_service import NCYUProxyServiceInterface
+from CaptchaRecognition.captcha_recognizer import CaptchaRecognizer
 
 class NCYUProxyService(NCYUProxyServiceInterface):
     LOGIN_PAGE_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Login.aspx?Language=zh-TW'
     PRELOGIN_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Login.aspx/PreLogin?Language=zh-TW'
     STUDENT_GRADE_URL = 'https://web085004.adm.ncyu.edu.tw/grade_net/StuSco_630.aspx'
     STUDENT_COURSES_URL = 'https://web08503a.adm.ncyu.edu.tw/stu_selq88.aspx'
+    CAPTCHA_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Captcha.ashx'
 
     def __init__(self):
-        pass
-
-    @staticmethod
-    def _prelogin(account: str, password: str):
-        HEADER = {
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
-            'content-type': 'application/json'
-        }
-
-        response = requests.post(
-            url=NCYUProxyService.PRELOGIN_URL,
-            headers=HEADER,
-            json={
-                'view':{
-                    'AccountId': account,
-                    'Password': password
-                }
-            }
-        )
-
-        return response.json()['d']
+        self.captcha_recognizer = CaptchaRecognizer()
     
     def login(self, account: str, password: str) -> str:
         HEADER = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
         }
 
-        prelogin_response = self._prelogin(account, password)
-        if prelogin_response['Code'] != '1':
-            raise Exception('Login failed')
+        s = requests.session()
+        code = '4'
+        captcha_text = ''
+        response = None
+        loop_times = 0
+        # get captcha image
+        while code == '4' and loop_times < 6:
+            response = s.get(url=NCYUProxyService.CAPTCHA_URL, headers=HEADER)
+            captcha = response.content
+            captcha = cv2.imdecode(np.frombuffer(captcha, np.uint8), cv2.IMREAD_COLOR)
+            captcha_text = self.captcha_recognizer.recognize(captcha)  
 
-        session = requests.session()
+            response = s.post(url=NCYUProxyService.PRELOGIN_URL, headers={
+                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
+                'content-type': 'application/json'
+            }, json={
+                'view':{
+                    'AccountId': account,
+                    'Password': password,
+                    'Captcha': captcha_text
+            }}).json()['d']
+            code = response['Code']
+            loop_times += 1
+        
+        if code == '4':
+            raise Exception('Captcha recognition failed')
+        
+        if code != '1':
+            raise Exception('Login failed')
+        
         vve = get_VVE()
         data = {
             '__VIEWSTATE': vve['viewState'],
@@ -49,16 +59,17 @@ class NCYUProxyService(NCYUProxyServiceInterface):
             '__EVENTVALIDATION': vve['eventValidation'],
             'TbxAccountId': account,
             'TbxPassword': password,
-            'HfIdentity': prelogin_response['Message'],
+            'TbxCaptcha': captcha_text,
+            'HfIdentity': response['Message'],
             'HfPavalue': password,
             'BtnLogin': ''
         }
-        response = session.post(url=NCYUProxyService.LOGIN_PAGE_URL, data=data, headers=HEADER)
+        response = s.post(url=NCYUProxyService.LOGIN_PAGE_URL, data=data, headers=HEADER)
         webpid1 = BeautifulSoup(response.text, features='html.parser').find('input', {'name': 'WebPid1'})['value']
-
+        
         # idk why this piece of code have to be added. If I don't add it, the grade endpoint can not work
         # maybe some sort of verification or something?
-        response = session.get(
+        response = s.get(
             url='https://web085004.adm.ncyu.edu.tw/NewSite/Index2.aspx',
             data={
                 'WebPid1': webpid1,
@@ -68,7 +79,7 @@ class NCYUProxyService(NCYUProxyServiceInterface):
 
         if webpid1 == None:
             raise Exception('Login failed')
-
+        
         return webpid1
 
     def get_student_grade(self, webpid1: str):

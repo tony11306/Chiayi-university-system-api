@@ -16,6 +16,6 @@ class PersonalGradeHandler(Resource):
 
         return jsonify({
             'result': {
-                '所有學期': self.ncyu_proxy_service.get_personal_courses(webpid1)
+                '所有學期': self.ncyu_proxy_service.get_student_grade(webpid1)
             }
         })
