@@ -45,6 +45,6 @@ api.add_resource(PersonalGradeHandler, '/grade', resource_class_kwargs={'ncyu_pr
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, host='0.0.0.0', port=5000)
 
 
