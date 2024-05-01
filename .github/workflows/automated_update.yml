@@ -21,7 +21,7 @@ jobs:
                 pip install -r requirements.txt
 
         - name: Run crawler script
-          run: python crawler_script.py
+          run: python SchoolSystemModel/crawler_script.py
 
         - name: Commit and push changes
           run: |
