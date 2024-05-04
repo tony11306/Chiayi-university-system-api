@@ -29,4 +29,4 @@ jobs:
                 git config --global user.name "tony11306"
                 git add .
                 git commit -m "Automated update crawler data"
-                git push origin main
+                git push
