@@ -1,0 +1,32 @@
+name: Scheduled Crawler 
+on:
+    schedule:
+        - cron: "0 0 */3 * *"
+  
+jobs:
+    run_crawler:
+        runs-on: ubuntu-latest
+        
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Set up Python
+          uses: actions/setup-python@v5
+          with:
+            python-version: '3.9'
+
+        - name: Install dependencies
+          run: |
+                pip install -r requirements.txt
+
+        - name: Run crawler script
+          run: python SchoolSystemModel/crawler_script.py
+
+        - name: Commit and push changes
+          run: |
+                git config --global user.email "tony20020507@gmail.com"
+                git config --global user.name "tony11306"
+                git add .
+                git commit -m "Automated update crawler data"
+                git push
