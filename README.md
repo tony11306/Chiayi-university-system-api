@@ -13,7 +13,7 @@
 
 另外，webpid1 有時效性，沒有測試過有多久，反正只要失效了，重新 call 這個 api 就好。
 
-> **URL**: `https://ncyu-api.onrender.com/login`
+> **URL**: `https://ncyu-api-879634933469.us-central1.run.app/login`
 
 > **Request type**: `POST`
 
@@ -55,7 +55,7 @@
 
 目前是使用`當學期選課查詢`來爬取，不確定是否穩定。
 
-> **URL**: `https://ncyu-api.onrender.com/course`
+> **URL**: `https://ncyu-api-879634933469.us-central1.run.app/course`
 
 > **Request type**: `POST`
 
@@ -109,7 +109,7 @@
 
 此功能需要 webpid1 參數，會回傳這個帳號所有學期的學期成績。
 
-> **URL**: `https://ncyu-api.onrender.com/grade`
+> **URL**: `https://ncyu-api-879634933469.us-central1.run.app/grade`
 
 > **Request type**: `POST`
 
@@ -158,7 +158,7 @@
 
 查詢選課學期符合條件的課程，若沒有附上任何參數，則回傳所有課程，若沒有符合條件的結果，則回傳空的結果。
 
-> **URL**: `https://ncyu-api.onrender.com/course_selection`
+> **URL**: `https://ncyu-api-879634933469.us-central1.run.app/course_selection`
 
 > **Request type**: `GET`
 
