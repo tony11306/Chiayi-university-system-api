@@ -1,7 +1,6 @@
 from firebase_admin import firestore
 from cachetools import cached, TTLCache
 from typing import Tuple, List, Dict, Any
-import re
 
 from Models.course import Course, CourseSchedule
 from Models.semester import Semester
