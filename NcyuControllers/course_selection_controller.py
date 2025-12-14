@@ -3,9 +3,9 @@ from flask_restful import Resource, reqparse
 import requests
 import json
 from bs4 import BeautifulSoup
-from SchoolSystemModel.decorators import exception_decorator
+from NcyuControllers.decorators import exception_decorator
 
-with open('./SchoolSystemModel/current_semester_course_datas/current_semester_course_datas.json', 'r', encoding='utf-8') as f:
+with open('./NcyuControllers/current_semester_course_datas/current_semester_course_datas.json', 'r', encoding='utf-8') as f:
     _datas = json.load(f)
     _data = _datas['所有課程']
     _semester = _datas['選課學年']
@@ -26,7 +26,7 @@ _CLASS_MAP = {'1': 1,
     'D': 14
 }
 
-class CourseSelectionEndpoint(Resource):
+class CourseSelectionController(Resource):
 
     def __init__(self) -> None:
         self.reqparse_args = reqparse.RequestParser()

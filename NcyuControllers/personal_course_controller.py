@@ -2,7 +2,7 @@ from flask import jsonify, abort
 from flask_restful import Resource, reqparse
 import requests
 from bs4 import BeautifulSoup
-from SchoolSystemModel.decorators import exception_decorator
+from NcyuControllers.decorators import exception_decorator
 import logging
 
 HEADER = {

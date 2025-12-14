@@ -5,8 +5,8 @@ import requests
 from bs4 import BeautifulSoup
 import cv2
 import numpy as np
-from SchoolSystemModel.decorators import exception_decorator
-from SchoolSystemModel.helpers import get_VVE
+from NcyuControllers.decorators import exception_decorator
+from NcyuControllers.helpers import get_VVE
 from CaptchaRecognition.captcha_recognizer import CaptchaRecognizer
 
 LOGIN_PAGE_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Login.aspx?Language=zh-TW'

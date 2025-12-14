@@ -4,14 +4,14 @@ from flask_restful import Resource, reqparse
 from flask import abort
 import requests
 from bs4 import BeautifulSoup
-from SchoolSystemModel.decorators import exception_decorator
+from NcyuControllers.decorators import exception_decorator
 from requests import Session
 
 HEADER = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
 }
 
-class GradeEndpoint(Resource):
+class GradeController(Resource):
 
     def __init__(self) -> None:
         self.reqparse_args = reqparse.RequestParser()

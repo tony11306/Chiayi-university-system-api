@@ -1,8 +1,17 @@
 import time
 import requests
 import json
+import os
 from bs4 import BeautifulSoup
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
 
+
+key_json = json.loads(os.environ.get('FIREBASE_SERVICE_ACCOUNT'))
+cred = credentials.Certificate(key_json)
+firebase_admin.initialize_app(cred)
+db = firestore.client()
 
 # A: 蘭潭, B: 民雄, C: 林森, D: 新民, E: ecourse線上課程
 CAMPUS_OPTION_VALUES = ['I3', 'A', 'B', 'C', 'D', ]
