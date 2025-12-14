@@ -1,0 +1,29 @@
+name: Scheduled Course Crawl
+
+on:
+  workflow_dispatch: # Allows manual triggering
+  schedule:
+    # Runs at 00:00 on every Sunday
+    - cron: '0 0 * * 0'
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9' # Based on .python-version file
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run crawler script
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: python crawler_script.py
