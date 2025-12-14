@@ -4,7 +4,6 @@ import cv2
 import numpy as np
 from CaptchaRecognition.captcha_recognizer import CaptchaRecognizer
 from NcyuControllers.helpers import get_VVE
-from dependency_injector.wiring import inject, Provide
 
 LOGIN_PAGE_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Login.aspx?Language=zh-TW'
 PRELOGIN_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Login.aspx/PreLogin?Language=zh-TW'
@@ -12,8 +11,7 @@ CAPTCHA_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Captcha.ashx'
 INDEX_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Index2.aspx'
 
 class NcyuAPIProxy:
-    @inject
-    def __init__(self, captcha_recognizer: CaptchaRecognizer = Provide[".captcha_recognizer"]):
+    def __init__(self, captcha_recognizer: CaptchaRecognizer):
         self.captcha_recognizer = captcha_recognizer
 
     def login(self, account, password):

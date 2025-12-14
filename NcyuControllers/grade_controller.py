@@ -2,11 +2,9 @@ from flask import jsonify
 from flask_restful import Resource, reqparse
 from .decorators import exception_decorator
 from Proxies.ncyu_proxy import NcyuAPIProxy
-from dependency_injector.wiring import inject, Provide
 
 class GradeController(Resource):
-    @inject
-    def __init__(self, ncyu_api_proxy: NcyuAPIProxy = Provide[".ncyu_api_proxy"]) -> None:
+    def __init__(self, ncyu_api_proxy: NcyuAPIProxy) -> None:
         self.reqparse_args = reqparse.RequestParser()
         self.reqparse_args.add_argument('webpid1', type=str, required=True, help='webpid1 is required')
         self.ncyu_api_proxy = ncyu_api_proxy

@@ -14,16 +14,38 @@ CORS(app)
 api = Api(app)
 
 container = Container()
-container.wire()
+# Wiring is still useful for dependencies between proxies
+container.wire() 
 
 app.config['JSON_AS_ASCII'] = False
 app.config['JSONIFY_MINETYPE'] = 'application/json;charset=utf-8'
 app.config.update(RESTFUL_JSON=dict(ensure_ascii=False))
 
-api.add_resource(CourseEndpoint, '/course')
-api.add_resource(LoginEndpoint, '/login')
-api.add_resource(GradeController, '/grade')
-api.add_resource(CourseSelectionController, '/course_selection')
+# Create dependency instances from the container
+firebase_proxy_instance = container.firebase_proxy()
+ncyu_api_proxy_instance = container.ncyu_api_proxy()
+
+# Add resources to the API, injecting dependencies via resource_class_kwargs
+api.add_resource(
+    CourseEndpoint,
+    '/course',
+    resource_class_kwargs={'ncyu_api_proxy': ncyu_api_proxy_instance}
+)
+api.add_resource(
+    LoginEndpoint,
+    '/login',
+    resource_class_kwargs={'ncyu_api_proxy': ncyu_api_proxy_instance}
+)
+api.add_resource(
+    GradeController,
+    '/grade',
+    resource_class_kwargs={'ncyu_api_proxy': ncyu_api_proxy_instance}
+)
+api.add_resource(
+    CourseSelectionController,
+    '/course_selection',
+    resource_class_kwargs={'firebase_proxy': firebase_proxy_instance}
+)
 
 @app.route('/')
 def index():

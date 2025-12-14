@@ -1,12 +1,10 @@
 from flask import jsonify, abort
 from flask_restful import Resource, reqparse
-from dependency_injector.wiring import inject, Provide
 from Proxies.ncyu_proxy import NcyuAPIProxy
 from .decorators import exception_decorator
 
 class LoginEndpoint(Resource):
-    @inject
-    def __init__(self, ncyu_api_proxy: NcyuAPIProxy = Provide[".ncyu_api_proxy"]) -> None:
+    def __init__(self, ncyu_api_proxy: NcyuAPIProxy) -> None:
         self.reqparse_args = reqparse.RequestParser()
         self.reqparse_args.add_argument('account', type=str, required=True, help='account is required')
         self.reqparse_args.add_argument('password', type=str, required=True, help='password is required')

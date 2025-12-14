@@ -6,7 +6,9 @@ from bs4 import BeautifulSoup
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+from dotenv import load_dotenv
 
+load_dotenv()
 
 key_json = json.loads(os.environ.get('FIREBASE_SERVICE_ACCOUNT'))
 cred = credentials.Certificate(key_json)
@@ -125,5 +127,50 @@ for campus in CAMPUS_OPTION_VALUES:
 
         
 print(len(courses))
-with open('./SchoolSystemModel/current_semester_course_datas/current_semester_course_datas.json', 'w', encoding='utf-8') as f:
-    json.dump({'選課學年': f'{course_select_year} 學年度第 {course_select_semester} 學期', '所有課程': courses}, fp=f, ensure_ascii=False)
+
+# --- Save to Firestore ---
+
+# 1. Save semester metadata
+print("Saving semester metadata...")
+metadata_ref = db.collection('metadata').document('current_semester')
+metadata_ref.set({
+    'year': int(course_select_year),
+    'term': int(course_select_semester)
+})
+print("Done.")
+
+# 2. Clear old courses
+print("Clearing old course data...")
+courses_ref = db.collection('courses')
+while True:
+    docs = courses_ref.limit(500).stream()
+    batch = db.batch()
+    doc_count = 0
+    for doc in docs:
+        batch.delete(doc.reference)
+        doc_count += 1
+    
+    if doc_count == 0:
+        break
+        
+    batch.commit()
+    print(f"Deleted {doc_count} documents in a batch.")
+print("Done.")
+
+# 3. Add new courses
+print("Uploading new course data...")
+batch = db.batch()
+for i, course in enumerate(courses):
+    doc_ref = courses_ref.document()
+    batch.set(doc_ref, course)
+    # Commit the batch every 500 courses
+    if (i + 1) % 500 == 0:
+        print(f"Committing batch of 500 courses...")
+        batch.commit()
+        batch = db.batch()
+
+# Commit the final batch if it's not empty
+if (i + 1) % 500 != 0:
+    print("Committing final batch...")
+    batch.commit()
+print("Upload complete.")
