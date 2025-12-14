@@ -20,8 +20,8 @@ def _dict_to_course(data: Dict[str, Any]) -> Course:
     schedule = [
         CourseSchedule(
             day_of_week=item.get('星期'),
-            start_period=_safe_int(item.get('開始節次')),
-            end_period=_safe_int(item.get('結束節次'))
+            start_period=item.get('開始節次'),
+            end_period=item.get('結束節次')
         ) for item in schedule_data
     ]
 
@@ -38,19 +38,19 @@ def _dict_to_course(data: Dict[str, Any]) -> Course:
         college=data.get('上課學院', ''),
         department=data.get('上課系所', ''),
         group=data.get('上課組別', ''),
-        target_grade=_safe_int(data.get('適用年級')),
+        target_grade=data.get('適用年級'),
         class_section=data.get('上課班別', ''),
         requirement_type=data.get('課程修別', ''),
-        credits=_safe_int(data.get('學分數')),
-        hours=_safe_int(data.get('時數')),
-        semesters=_safe_int(data.get('學期數')),
+        credits=data.get('學分數'),
+        hours=data.get('時數'),
+        semesters=data.get('學期數'),
         instruction_mode=data.get('授課類別', ''),
         remarks=data.get('備註', ''),
         instructor=data.get('授課老師', ''),
         schedule=schedule,
         classroom=data.get('上課教室', ''),
         campus=data.get('校區', ''),
-        capacity_limit=_safe_int(data.get('限修人數')),
+        capacity_limit=data.get('限修人數'),
         enrollment_restrictions=data.get('限選條件', '')
     )
 
