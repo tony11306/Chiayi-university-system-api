@@ -1,0 +1,179 @@
+import requests
+from bs4 import BeautifulSoup
+import cv2
+import numpy as np
+from CaptchaRecognition.captcha_recognizer import CaptchaRecognizer
+from NcyuControllers.helpers import get_VVE
+from dependency_injector.wiring import inject, Provide
+
+LOGIN_PAGE_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Login.aspx?Language=zh-TW'
+PRELOGIN_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Login.aspx/PreLogin?Language=zh-TW'
+CAPTCHA_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Captcha.ashx'
+INDEX_URL = 'https://web085004.adm.ncyu.edu.tw/NewSite/Index2.aspx'
+
+class NcyuAPIProxy:
+    @inject
+    def __init__(self, captcha_recognizer: CaptchaRecognizer = Provide[".captcha_recognizer"]):
+        self.captcha_recognizer = captcha_recognizer
+
+    def login(self, account, password):
+        HEADER = {
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
+        }
+
+        s = requests.session()
+        code = '4'
+        captcha_text = ''
+        response = None
+        loop_times = 0
+
+        while code == '4' and loop_times < 6:
+            response = s.get(url=CAPTCHA_URL, headers=HEADER)
+            captcha = response.content
+            captcha = cv2.imdecode(np.frombuffer(captcha, np.uint8), cv2.IMREAD_COLOR)
+            captcha_text = self.captcha_recognizer.recognize(captcha)  
+
+            response = s.post(url=PRELOGIN_URL, headers={
+                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
+                'content-type': 'application/json'
+            }, json={
+                'view':{
+                    'AccountId': account,
+                    'Password': password,
+                    'Captcha': captcha_text
+            }}).json()['d']
+            code = response['Code']
+            loop_times += 1
+        
+        if code == '4':
+            # Failed to solve captcha
+            return None, "Failed to solve captcha"
+        
+        if code != '1':
+            # Login failed
+            return None, "Login failed"
+
+        vve = get_VVE()
+        data = {
+            '__VIEWSTATE': vve['viewState'],
+            '__VIEWSTATEGENERATOR': vve['viewStateGenerator'],
+            '__EVENTVALIDATION': vve['eventValidation'],
+            'TbxAccountId': account,
+            'TbxPassword': password,
+            'TbxCaptcha': captcha_text,
+            'HfIdentity': response['Message'],
+            'HfPavalue': password,
+            'BtnLogin': ''
+        }
+        response = s.post(url=LOGIN_PAGE_URL, data=data, headers=HEADER)
+        webpid1 = BeautifulSoup(response.text, features='html.parser').find('input', {'name': 'WebPid1'})['value']
+        
+        # Verification step
+        s.get(url=INDEX_URL, data={'WebPid1': webpid1, 'Language': 'zh-TW'})
+
+        if webpid1 is None:
+            return None, "Failed to get webpid1"
+            
+        return webpid1, None
+
+    def get_grades(self, webpid1):
+        url = 'https://web085004.adm.ncyu.edu.tw/grade_net/StuSco_630.aspx'
+        session = requests.session()
+        response = session.post(
+            url=url,
+            data={
+                'WebPid1': webpid1,
+                'Language': 'zh-TW'
+            }
+        )
+
+        soup = BeautifulSoup(response.text, 'html.parser')
+        semesterIDs = list(map(lambda tag: tag['value'], soup.find_all('option')))
+        previous_page_id = soup.find('input', {'name': '__PREVIOUSPAGE'})['value']
+        view_state = soup.find('input', {'id': '__VIEWSTATE'})['value']
+        view_state_generator = soup.find('input', {'id': '__VIEWSTATEGENERATOR'})['value']
+        event_validation = soup.find('input', {'id': '__EVENTVALIDATION'})['value']
+
+        def get_semester_grade(semesterID):
+            response = session.post(
+                url=url,
+                data={
+                    '__EVENTTARGET': '',
+                    '__EVENTARGUMENT': '',
+                    '__VIEWSTATE': view_state,
+                    '__VIEWSTATEGENERATOR': view_state_generator,
+                    '__PREVIOUSPAGE': previous_page_id,
+                    '__EVENTVALIDATION': event_validation,
+                    'ddlSyearSem': semesterID,
+                    'WebPid1': webpid1,
+                    'Language': 'zh-TW',
+                    'btnOK': '確定送出'.encode('big5')
+                },
+                headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36'}
+            )
+            
+            soup = BeautifulSoup(response.text, 'html.parser')
+            semester_text = soup.find('span', {'id': 'labelSyearSem'}).text
+            result = {
+                '學期': semester_text,
+                '學期平均': float(soup.find('span', {'id': 'FVSelstchf_lblScoavg'}).text),
+                'GPA': float(soup.find('span', {'id': 'FVSelstchf_lblGPA'}).text),
+                '實得學分': float(soup.find('span', {'id': 'FVSelstchf_lblRgcrd'}).text),
+                '課程': []
+            }
+            courses = soup.find('table', {'title': '學生單學期成績'}).find_all('tr')
+            for course in courses[1:]:
+                course_tds = course.find_all('td')
+                result['課程'].append({
+                    '課程代號': course_tds[0].text.strip('\n'),
+                    '課程名稱': course_tds[1].text.strip('\n'),
+                    '修別': course_tds[2].text.strip('\n'),
+                    '學分': float(course_tds[3].text),
+                    '學期成績': int(course_tds[4].text)
+                })
+            return result
+            
+        return list(map(get_semester_grade, semesterIDs))
+
+    def get_personal_courses(self, webpid1):
+        session = requests.session()
+        res = session.post(
+            url='https://web08503a.adm.ncyu.edu.tw/stu_selq88.aspx', # 當學期選課查詢
+            headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36'},
+            data={
+                'WebPid1': webpid1,
+                'language': 'zh-TW',
+                'program': ''
+            }
+        )
+        soup = BeautifulSoup(res.text, features='html.parser')
+        curriculums = []
+
+        def course_time_to_dict(day: str, start_end_time: str):
+            start_end = start_end_time.split('~')
+            return {
+                "星期": day,
+                "開始節次": start_end[0],
+                "結束節次": start_end[1]
+            }
+
+        for curriculum in soup.find_all('table')[2].find_all('tr')[1:]:
+            row = curriculum.find_all('td')
+            curriculums.append({
+                    '課程名稱': row[3].text,
+                    '學分數': row[5].text,
+                    '學期數': row[7].text,
+                    '課程修別': row[8].text + '修',
+                    '選課修別': row[9].text + '修' if row[9].text != '通' else '識',
+                    '授課老師': row[12].text.strip(),
+                    '上課時間': list(map(course_time_to_dict, row[13].text.strip().split(), row[14].text.strip().split())),
+                    '適用年級': row[15].text,
+                    '上課教室': row[16].text,
+                    '校區': row[17].text,
+                    '限修人數': row[18].text,
+                    '選上人數': row[19].text
+                }
+            )
+        
+        return curriculums
+

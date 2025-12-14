@@ -3,14 +3,18 @@ from flask_restful import Api
 from flask_cors import CORS
 import logging
 
-app = Flask(__name__)
-CORS(app)
-api = Api(app)
-
+from container import Container
 from NcyuControllers.personal_course_controller import CourseEndpoint
 from NcyuControllers.login_controller import LoginEndpoint
 from NcyuControllers.grade_controller import GradeController
 from NcyuControllers.course_selection_controller import CourseSelectionController
+
+app = Flask(__name__)
+CORS(app)
+api = Api(app)
+
+container = Container()
+container.wire()
 
 app.config['JSON_AS_ASCII'] = False
 app.config['JSONIFY_MINETYPE'] = 'application/json;charset=utf-8'
