@@ -57,7 +57,7 @@ class FirebaseProxy:
     def __init__(self, db: firestore.Client):
         self.db = db
 
-    @cached(cache=TTLCache(maxsize=1, ttl=3600))
+    @cached(cache=TTLCache(maxsize=1, ttl=7200))
     def get_all_courses(self) -> Tuple[Semester, List[Course]]:
         """
         Fetches all courses from Firestore with a 1-hour cache.
