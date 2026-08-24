@@ -75,9 +75,9 @@ class CourseSelectionController(Resource):
                     if start_class is not None and end_class is not None:
                         if req_start_mapped > course_start_mapped or req_end_mapped < course_end_mapped:
                             isMatch = False
-                    elif start_class is not None and course_time.start_period != int(start_class):
+                    elif start_class is not None and req_start_mapped != course_start_mapped:
                         isMatch = False
-                    elif end_class is not None and course_time.end_period != int(end_class):
+                    elif end_class is not None and req_end_mapped != course_end_mapped:
                         isMatch = False
                     
                     if isMatch:
